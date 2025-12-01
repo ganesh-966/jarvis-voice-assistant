@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    environment {
+        SSH_KEY = credentials('ec2-ssh-key')  // SSH key stored in Jenkins credentials
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/ganesh-966/https://github.com/ganesh-966/jarvis-voice-assistant.git'
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                sshagent(['ec2-ssh-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@YOUR_EC2_IP "cd /home/ubuntu/app && git pull"'
+                }
+            }
+        }
+    }
+}
